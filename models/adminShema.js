@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const userSchema = new mongoose.Schema({
+const adminSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
@@ -36,7 +36,12 @@ const userSchema = new mongoose.Schema({
 
   roles: {
     type: String,
-    enum: ["user"], // Example roles
+    enum: ["admin"], // Example roles
+  },
+
+  username: {
+    type: String,
+    trim: true,
   },
 
   createdAt: {
@@ -49,9 +54,9 @@ const userSchema = new mongoose.Schema({
   },
 });
 
-userSchema.pre("save", function (next) {
+adminSchema.pre("save", function (next) {
   this.updatedAt = Date.now();
   next();
 });
 
-module.exports = mongoose.model("User", userSchema);
+module.exports = mongoose.model("Admin", adminSchema);

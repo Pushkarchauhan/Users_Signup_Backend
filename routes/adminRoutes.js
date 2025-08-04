@@ -1,14 +1,12 @@
 const express = require("express");
 const router = express.Router();
-const userSchema = require("../models/userSchema.js");
+const adminSchema = require("../models/adminShema.js");
 const { default: mongoose } = require("mongoose");
-const passport = require("../auth.js");
-const localAuthmiddleware = passport.authenticate("local", { session: false });
 
 router.post("/", async (req, res) => {
   try {
     const data = req.body;
-    const newPerson = new userSchema(data); // Creating a new person
+    const newPerson = new adminSchema(data); // Creating a new person
     const response = await newPerson.save(); // Saved a new person
     console.log("data saved");
     res.status(200).json(response);
@@ -18,9 +16,9 @@ router.post("/", async (req, res) => {
   }
 });
 
-router.get("/", localAuthmiddleware, async (req, res) => {
+router.get("/", async (req, res) => {
   try {
-    const data = await userSchema.find();
+    const data = await adminSchema.find();
     console.log("data fetched");
     res.status(200).json(data);
   } catch (error) {
@@ -34,7 +32,7 @@ router.put("/:id", async (req, res) => {
     const personId = req.params.id;
     const updatedPersonData = req.body;
 
-    const response = await userSchema.findByIdAndUpdate(
+    const response = await adminSchema.findByIdAndUpdate(
       personId,
       updatedPersonData,
       {
@@ -58,7 +56,7 @@ router.put("/:id", async (req, res) => {
 router.delete("/:id", async (req, res) => {
   try {
     const personId = req.params.id;
-    const response = await userSchema.findByIdAndDelete(personId);
+    const response = await adminSchema.findByIdAndDelete(personId);
 
     if (!response) {
       return res.status(404).json({ error: "Person not found" });
