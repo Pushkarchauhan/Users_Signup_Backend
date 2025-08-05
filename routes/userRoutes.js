@@ -5,13 +5,22 @@ const { default: mongoose } = require("mongoose");
 const passport = require("../auth.js");
 const localAuthmiddleware = passport.authenticate("local", { session: false });
 
-router.post("/", async (req, res) => {
+router.post("/signup", async (req, res) => {
   try {
     const data = req.body;
     const newPerson = new userSchema(data); // Creating a new person
     const response = await newPerson.save(); // Saved a new person
     console.log("data saved");
-    res.status(200).json(response);
+
+    const payload = {
+      id: response._id,
+      name: response.name,
+    };
+
+    const token = generateToken(payload);
+    console.log(`Token is : ${token}`);
+
+    res.status(200).json({ response: response, token: token });
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Internal Server error" });
